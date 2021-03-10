@@ -36,7 +36,7 @@ if [ "$dataset" == "epic" ]
 then
 	dataset_source="source_train" # depend on users
 	dataset_target="target_train" # depend on users
-	dataset_val="target_test" # _noun" # depend on users
+	dataset_val="target_val" # _noun" # depend on users
 	num_source=16115 # number of training data (source)
 	num_target=26115 # number of training data (target)
 
