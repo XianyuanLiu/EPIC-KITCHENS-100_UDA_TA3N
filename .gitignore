@@ -5,5 +5,7 @@
 *.zip
 *.ckpt
 
+model
+
 # Pycharm
 .idea
