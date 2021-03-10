@@ -3,7 +3,7 @@
 #====== parameters ======#
 dataset="epic" # hmdb_ucf | hmdb_ucf_small | ucf_olympic
 num_class='97,300'
-training=True # true | false
+training=true # true | false
 testing=true # true | false
 modality=ALL
 frame_type=feature # frame | feature
