@@ -474,7 +474,7 @@ class VideoModel(nn.Module):
             base_out = pred
 
         if not self.before_softmax:
-            base_out = (self.softmax(base_out[0]), self.softmax(base_out[1]))
+            base_out = (self.softmax(dim=base_out[0]), self.softmax(dim=base_out[1]))
         output = base_out
 
         if self.baseline_type == 'tsn':
