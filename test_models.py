@@ -325,6 +325,7 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
                 pred_src_noun = out_src_noun[1]
             else:
                 pred_noun = out_val_verb[1]
+                pred_src_noun = out_src_verb[1]
             pred_verb_cpu = pred_verb.cpu().tolist()
             pred_noun_cpu = pred_noun.cpu().tolist()
             pred_src_verb_cpu = pred_src_verb.cpu().tolist()
