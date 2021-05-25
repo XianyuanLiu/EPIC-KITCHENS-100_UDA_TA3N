@@ -28,15 +28,15 @@ else
 fi
 
 #====== select dataset ======#
-path_data_root="/shared/tale2/Shared/xliu/epic100/epic-uda-feature/" # "data/" # depend on users
-path_labels_root="annotations" #"/jmain01/home/JAD026/dxd01/jjm50-dxd01/DA_Features/train_test/train/" # depend on users
+path_data_root="/shared/tale2/Shared/xliu/epic100/epic-uda-feature//shared/tale2/Shared/data/EgoAction/EPIC-100/frames_rgb_flow/feature/" # "data/" # depend on users
+path_labels_root="annotations/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/" #"/jmain01/home/JAD026/dxd01/jjm50-dxd01/DA_Features/train_test/train/" # depend on users
 path_exp_root="model/action-model/" # depend on users
 train_metric="all"
 if [ "$dataset" == "epic" ]
 then
 	dataset_source="source_train" # depend on users
 	dataset_target="target_train" # depend on users
-	dataset_val="target_val" # _noun" # depend on users
+	dataset_val="target_test" # _noun" # depend on users
 	num_source=16115 # number of training data (source)
 	num_target=26115 # number of training data (target)
 
@@ -46,7 +46,7 @@ then
 
 	train_source_list=$path_labels_root'/EPIC_100_uda_source_train.pkl' # '/domain_adaptation_source_train_pre-release_v3.pkl'
 	train_target_list=$path_labels_root'/EPIC_100_uda_target_train_timestamps.pkl' # '/domain_adaptation_target_train_pre-release_v6.pkl'
-	val_list=$path_labels_root'/EPIC_100_uda_target_val.pkl' # '/domain_adaptation_target_test_pre-release_v3.pkl' # 'domain_adaptation_validation_pre-release_v3.pkl'
+	val_list=$path_labels_root'/EPIC_100_uda_target_test_timestamps.pkl' # '/domain_adaptation_target_test_pre-release_v3.pkl' # 'domain_adaptation_validation_pre-release_v3.pkl'
 
 	path_exp=$path_exp_root'Testexp'
 fi
