@@ -29,7 +29,7 @@ fi
 
 #====== select dataset ======#
 path_data_root="/shared/tale2/Shared/xliu/epic100/epic-uda-feature//shared/tale2/Shared/data/EgoAction/EPIC-100/frames_rgb_flow/feature/" # "data/" # depend on users
-path_labels_root="annotations/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/" #"/jmain01/home/JAD026/dxd01/jjm50-dxd01/DA_Features/train_test/train/" # depend on users
+path_labels_root="/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/" #"/jmain01/home/JAD026/dxd01/jjm50-dxd01/DA_Features/train_test/train/" # depend on users
 path_exp_root="model/action-model/" # depend on users
 train_metric="all"
 if [ "$dataset" == "epic" ]
