@@ -279,6 +279,7 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
     verb_predictions = []
     noun_predictions = []
     results_dict = {}
+    results_src_dict = {}
     for i, (val_data_all, val_label, val_id) in enumerate(val_loader):
 
         if noun_model is not None:
@@ -303,23 +304,32 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
                     -1)  # expand the size for all the frames
 
             # compute output
-            _, _, _, _, _, attn_val_verb, out_val_verb, out_val_2_verb, pred_domain_val_verb, feat_val_verb = verb_model(
+            attn_src_verb, out_src_verb, out_src_2_verb, pred_domain_src_verb, feat_src_verb, attn_val_verb, out_val_verb, out_val_2_verb, pred_domain_val_verb, feat_val_verb = verb_model(
                 val_data, val_data, [0, 0, 0], 0, is_train=False, reverse=False)
             # ignore dummy tensors
+            attn_src_verb, out_src_verb, out_src_2_verb, pred_domain_src_verb, feat_src_verb = removeDummy(
+                attn_src_verb, out_src_verb, out_src_2_verb, pred_domain_src_verb, feat_src_verb, batch_val_ori)
             attn_val_verb, out_val_verb, out_val_2_verb, pred_domain_val_verb, feat_val_verb = removeDummy(
                 attn_val_verb, out_val_verb, out_val_2_verb, pred_domain_val_verb, feat_val_verb, batch_val_ori)
             pred_verb = out_val_verb[0]
+            pred_src_verb = out_src_verb[0]
 
             if noun_model is not None:
-                _, _, _, _, _, attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun = noun_model(
+                attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun, attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun = noun_model(
                     val_data_noun, val_data_noun, [0, 0, 0], 0, is_train=False, reverse=False)
+                attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun = removeDummy(
+                    attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun, batch_val_ori)
                 attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun = removeDummy(
                     attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun, batch_val_ori)
                 pred_noun = out_val_noun[1]
+                pred_src_noun = out_src_noun[1]
             else:
                 pred_noun = out_val_verb[1]
             pred_verb_cpu = pred_verb.cpu().tolist()
             pred_noun_cpu = pred_noun.cpu().tolist()
+            pred_src_verb_cpu = pred_src_verb.cpu().tolist()
+            pred_src_noun_cpu = pred_src_noun.cpu().tolist()
+
             for p_verb, p_noun, id in zip(pred_verb_cpu, pred_noun_cpu, val_id):
                 verb_dict = {}
                 noun_dict = {}
@@ -328,6 +338,15 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
                 for i, prob in enumerate(p_noun):
                     noun_dict[str(i)] = prob
                 results_dict[id] = {'verb': verb_dict, 'noun': noun_dict}
+
+            for p_verb, p_noun, id in zip(pred_src_verb_cpu, pred_src_noun_cpu, val_id):
+                verb_dict = {}
+                noun_dict = {}
+                for i, prob in enumerate(p_verb):
+                    verb_dict[str(i)] = prob
+                for i, prob in enumerate(p_noun):
+                    noun_dict[str(i)] = prob
+                results_src_dict[id] = {'verb': verb_dict, 'noun': noun_dict}
 
             noun_predictions.append(torch.argmax(pred_noun, dim=-1).cpu().numpy())
             verb_predictions.append(torch.argmax(pred_verb, dim=-1).cpu().numpy())
@@ -363,7 +382,9 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
             end = time.time()
 
     with open(args.result_json, "w") as f:
-        json.dump({'results_target': results_dict, "version": "0.2",
+        json.dump({'results_target': results_dict,
+                   'results_source': results_src_dict,
+                   "version": "0.2",
                    "challenge": "domain_adaptation", "sls_pt": 0,
                    "sls_tl": 0,
                    "sls_td": 0}, f)
