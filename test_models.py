@@ -386,9 +386,9 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
         json.dump({'results_target': results_dict,
                    'results_source': results_src_dict,
                    "version": "0.2",
-                   "challenge": "domain_adaptation", "sls_pt": 0,
-                   "sls_tl": 0,
-                   "sls_td": 0}, f)
+                   "challenge": "domain_adaptation", "sls_pt": 2,
+                   "sls_tl": 3,
+                   "sls_td": 3}, f)
     if val_labels:
         print(('Testing Results: Prec@1 verb {top1_verb.avg:.3f}  Prec@1 noun {top1_noun.avg:.3f} Prec@1 action {top1_action.avg:.3f} Prec@5 verb {top5_verb.avg:.3f} Prec@5 noun {top5_noun.avg:.3f} Prec@5 action {top5_action.avg:.3f} Loss {loss.avg:.5f}'
                .format(top1_verb=top1_verb, top1_noun=top1_noun, top1_action=top1_action, top5_verb=top5_verb,
