@@ -119,9 +119,9 @@ then
 	# parameters for optimization
 	lr_decay=10
     	lr_adaptive=none # dann # none | loss | dann
-    	lr_steps_1=10
-    	lr_steps_2=20
-    	epochs=30
+    	lr_steps_1=20
+    	lr_steps_2=40
+    	epochs=60
 	gd=20
 	
 	#------ main command ------#
