@@ -384,7 +384,7 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
 
     with open(args.result_json, "w") as f:
         json.dump({'results_target': results_dict,
-                   'results_source': results_src_dict,
+                #    'results_source': results_src_dict,
                    "version": "0.2",
                    "challenge": "domain_adaptation", 
                    "sls_pt": 2,
