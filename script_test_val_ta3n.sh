@@ -29,16 +29,23 @@ fi
 
 #====== select dataset ======#
 path_data_root="/shared/tale2/Shared/data/EgoAction/EPIC-100/frames_rgb_flow/feature/" # "data/" # depend on users
-path_labels_root="/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/" #"/jmain01/home/JAD026/dxd01/jjm50-dxd01/DA_Features/train_test/train/" # depend on users
+# path_labels_root="/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/" #"/jmain01/home/JAD026/dxd01/jjm50-dxd01/DA_Features/train_test/train/" # depend on users
+path_labels_root="/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/val/"
 path_exp_root="model/action-model/" # depend on users
 train_metric="all"
 if [ "$dataset" == "epic" ]
 then
-	dataset_source="source_train" # depend on users
-	dataset_target="target_train" # depend on users
-	dataset_val="target_test" # _noun" # depend on users
-	num_source=16115 # number of training data (source)
-	num_target=26115 # number of training data (target)
+	# dataset_source="source_train" # depend on users
+	# dataset_target="target_train" # depend on users
+	# dataset_val="target_test" # _noun" # depend on users
+	# num_source=16115 # number of training data (source)
+	# num_target=26115 # number of training data (target)
+
+	dataset_source="source_val" # depend on users
+	dataset_target="target_val" # depend on users
+	dataset_val="target_val" # _noun" # depend on users
+	num_source=5002 # number of training data (source)
+	num_target=7906 # number of training data (target)
 
 	path_data_source=$path_data_root'/'$dataset_source
 	path_data_target=$path_data_root'/'$dataset_target
