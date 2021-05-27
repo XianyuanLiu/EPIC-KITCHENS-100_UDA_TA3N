@@ -38,8 +38,10 @@ then
 	dataset_source="source_train" # depend on users
 	dataset_target="target_train" # depend on users
 	dataset_val="target_test" # _noun" # depend on users
-	num_source=16115 # number of training data (source)
-	num_target=26115 # number of training data (target)
+	# num_source=16115 # number of training data (source)
+	# num_target=26115 # number of training data (target)
+	num_source=5002 # number of training data (source)
+	num_target=7906 # number of training data (target)
 
 	path_data_source=$path_data_root'/'$dataset_source
 	path_data_target=$path_data_root'/'$dataset_target
