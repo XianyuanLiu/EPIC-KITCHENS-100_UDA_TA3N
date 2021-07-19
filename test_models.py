@@ -28,23 +28,28 @@ init(autoreset=True)
 
 # options
 parser = argparse.ArgumentParser(description="Standard video-level testing")
-parser.add_argument('num_class', type=str, default="classInd.txt")
-parser.add_argument('modality', type=str, choices=['ALL', 'Audio', 'RGB', 'Flow', 'RGBDiff', 'RGBDiff2', 'RGBDiffplus'])
-parser.add_argument('test_list', type=str)
-parser.add_argument('weights', type=str)
-parser.add_argument('test_target_data', type=str)
-parser.add_argument('result_json', type=str)
+parser.add_argument('--num_class', type=str, default="97, 300")
+parser.add_argument('--modality', type=str, default="ALL",
+                    choices=['ALL', 'Audio', 'RGB', 'Flow', 'RGBDiff', 'RGBDiff2', 'RGBDiffplus'])
+parser.add_argument('--test_list', type=str,
+                    # default="I:/Datasets/EgoAction/EPIC-100/annotations/labels_train_test/val/EPIC_100_uda_target_test_timestamps.pkl")
+                    default="/shared/tale2/Shared/data/EgoAction/EPIC-100/annotations/labels_train_test/val/EPIC_100_uda_target_test_timestamps.pkl")
+parser.add_argument('--weights', type=str, default="model/action-model/ALL/checkpoint.pth.tar")
+parser.add_argument('--test_target_data', type=str,
+                    # default="I:/Datasets/EgoAction/EPIC-100/frames_rgb_flow/feature/target_val")
+                    default="/shared/tale2/Shared/data/EgoAction/EPIC-100/frames_rgb_flow/feature/target_val")
+parser.add_argument('--result_json', type=str, default="test.json")
 
 # ========================= Model Configs ==========================
 parser.add_argument('--noun_target_data', type=str, default=None)
 parser.add_argument('--noun_weights', type=str, default=None)
-parser.add_argument('--arch', type=str, default="resnet101")
+parser.add_argument('--arch', type=str, default="TBN")
 parser.add_argument('--test_segments', type=int, default=5)
 parser.add_argument('--add_fc', default=1, type=int, metavar='M',
                     help='number of additional fc layers (excluding the last fc layer) (e.g. 0, 1, 2, ...)')
 parser.add_argument('--fc_dim', type=int, default=512, help='dimension of added fc')
-parser.add_argument('--baseline_type', type=str, default='frame', choices=['frame', 'video', 'tsn'])
-parser.add_argument('--frame_aggregation', type=str, default='avgpool',
+parser.add_argument('--baseline_type', type=str, default='video', choices=['frame', 'video', 'tsn'])
+parser.add_argument('--frame_aggregation', type=str, default='trn-m',
                     choices=['avgpool', 'rnn', 'temconv', 'trn-m', 'none'],
                     help='aggregation of frame features (none if baseline_type is not video)')
 parser.add_argument('--dropout_i', type=float, default=0)
@@ -63,7 +68,7 @@ parser.add_argument('--share_params', type=str, default='Y', choices=['Y', 'N'])
 parser.add_argument('--use_bn', type=str, default='none', choices=['none', 'AdaBN', 'AutoDIAL'])
 parser.add_argument('--use_attn_frame', type=str, default='none',
                     choices=['none', 'TransAttn', 'general', 'DotProduct'], help='attention-mechanism for frames only')
-parser.add_argument('--use_attn', type=str, default='none', choices=['none', 'TransAttn', 'general', 'DotProduct'],
+parser.add_argument('--use_attn', type=str, default='TransAttn', choices=['none', 'TransAttn', 'general', 'DotProduct'],
                     help='attention-mechanism')
 parser.add_argument('--n_attn', type=int, default=1, help='number of discriminators for transferable attention')
 
@@ -77,8 +82,9 @@ parser.add_argument('--save_scores', type=str, default=None)
 parser.add_argument('--save_attention', type=str, default=None)
 parser.add_argument('--max_num', type=int, default=-1, help='number of videos to test')
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
+# parser.add_argument('-j', '--workers', default=0, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
-parser.add_argument('--bS', default=2, help='batch size', type=int, required=False)
+parser.add_argument('--bS', default=512, help='batch size', type=int, required=False)
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--flow_prefix', type=str, default='')
 
@@ -192,7 +198,7 @@ def accuracy(output, target, topk=(1,)):
 
     res = []
     for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
+        correct_k = correct[:k].contiguous().view(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
@@ -308,7 +314,7 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
                 val_data, val_data, [0, 0, 0], 0, is_train=False, reverse=False)
             # ignore dummy tensors
             # attn_src_verb, out_src_verb, out_src_2_verb, pred_domain_src_verb, feat_src_verb = removeDummy(
-                # attn_src_verb, out_src_verb, out_src_2_verb, pred_domain_src_verb, feat_src_verb, batch_val_ori)
+            # attn_src_verb, out_src_verb, out_src_2_verb, pred_domain_src_verb, feat_src_verb, batch_val_ori)
             attn_val_verb, out_val_verb, out_val_2_verb, pred_domain_val_verb, feat_val_verb = removeDummy(
                 attn_val_verb, out_val_verb, out_val_2_verb, pred_domain_val_verb, feat_val_verb, batch_val_ori)
             pred_verb = out_val_verb[0]
@@ -318,7 +324,7 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
                 attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun, attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun = noun_model(
                     val_data_noun, val_data_noun, [0, 0, 0], 0, is_train=False, reverse=False)
                 # attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun = removeDummy(
-                    # attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun, batch_val_ori)
+                # attn_src_noun, out_src_noun, out_src_2_noun, pred_domain_src_noun, feat_src_noun, batch_val_ori)
                 attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun = removeDummy(
                     attn_val_noun, out_val_noun, out_val_2_noun, pred_domain_val_noun, feat_val_noun, batch_val_ori)
                 pred_noun = out_val_noun[1]
@@ -341,13 +347,13 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
                 results_dict[id] = {'verb': verb_dict, 'noun': noun_dict}
 
             # for p_verb, p_noun, id in zip(pred_src_verb_cpu, pred_src_noun_cpu, val_id):
-                # verb_dict = {}
-                # noun_dict = {}
-                # for i, prob in enumerate(p_verb):
-                    # verb_dict[str(i)] = prob
-                # for i, prob in enumerate(p_noun):
-                    # noun_dict[str(i)] = prob
-                # results_src_dict[id] = {'verb': verb_dict, 'noun': noun_dict}
+            # verb_dict = {}
+            # noun_dict = {}
+            # for i, prob in enumerate(p_verb):
+            # verb_dict[str(i)] = prob
+            # for i, prob in enumerate(p_noun):
+            # noun_dict[str(i)] = prob
+            # results_src_dict[id] = {'verb': verb_dict, 'noun': noun_dict}
 
             noun_predictions.append(torch.argmax(pred_noun, dim=-1).cpu().numpy())
             verb_predictions.append(torch.argmax(pred_verb, dim=-1).cpu().numpy())
@@ -384,16 +390,17 @@ def validate(val_loader, verb_model, criterion, num_class, noun_model=None, val_
 
     with open(args.result_json, "w") as f:
         json.dump({'results_target': results_dict,
-                #    'results_source': results_src_dict,
+                   #    'results_source': results_src_dict,
                    "version": "0.2",
-                   "challenge": "domain_adaptation", 
+                   "challenge": "domain_adaptation",
                    "sls_pt": 2,
                    "sls_tl": 3,
                    "sls_td": 3}, f)
     if val_labels:
-        print(('Testing Results: Prec@1 verb {top1_verb.avg:.3f}  Prec@1 noun {top1_noun.avg:.3f} Prec@1 action {top1_action.avg:.3f} Prec@5 verb {top5_verb.avg:.3f} Prec@5 noun {top5_noun.avg:.3f} Prec@5 action {top5_action.avg:.3f} Loss {loss.avg:.5f}'
-               .format(top1_verb=top1_verb, top1_noun=top1_noun, top1_action=top1_action, top5_verb=top5_verb,
-                       top5_noun=top5_noun, top5_action=top5_action, loss=losses)))
+        print((
+                  'Testing Results: Prec@1 verb {top1_verb.avg:.3f}  Prec@1 noun {top1_noun.avg:.3f} Prec@1 action {top1_action.avg:.3f} Prec@5 verb {top5_verb.avg:.3f} Prec@5 noun {top5_noun.avg:.3f} Prec@5 action {top5_action.avg:.3f} Loss {loss.avg:.5f}'
+                  .format(top1_verb=top1_verb, top1_noun=top1_noun, top1_action=top1_action, top5_verb=top5_verb,
+                          top5_noun=top5_noun, top5_action=top5_action, loss=losses)))
     return top1_action.avg, top1_verb.avg, top1_noun.avg
 
 
