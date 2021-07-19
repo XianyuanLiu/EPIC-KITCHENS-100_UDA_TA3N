@@ -25,7 +25,7 @@ parser.add_argument('--train_target_data', type=str,
 
 # ========================= Model Configs ==========================
 parser.add_argument('--train_metric', default="all", type=str)
-parser.add_argument('--dann_warmup', default=False, action="store_true")
+parser.add_argument('--dann_warmup', default=True, action="store_true")
 parser.add_argument('--arch', type=str, default="TBN")
 parser.add_argument('--pretrained', type=str, default="none")
 parser.add_argument('--num_segments', type=int, default=5)
