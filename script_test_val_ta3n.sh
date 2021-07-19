@@ -41,9 +41,9 @@ then
 	# num_source=16115 # number of training data (source)
 	# num_target=26115 # number of training data (target)
 
-	dataset_source="source_val" # depend on users
-	dataset_target="target_val" # depend on users
-	dataset_val="target_val" # _noun" # depend on users
+	dataset_source="source_train" # depend on users
+	dataset_target="target_train" # depend on users
+	dataset_val="target_test" # _noun" # depend on users
 	num_source=5002 # number of training data (source)
 	num_target=7906 # number of training data (target)
 
@@ -135,7 +135,8 @@ then
 	echo $modality
 	python main.py $num_class $modality $train_source_list $train_target_list $val_list $path_data_val $path_data_source $path_data_target --exp_path $exp_path \
 	--train_metric $train_metric --dann_warmup --arch $arch --pretrained $pretrained --baseline_type $baseline_type --frame_aggregation $frame_aggregation \
-	--num_segments $num_segments --val_segments $val_segments --add_fc $add_fc --fc_dim $fc_dim --dropout_i 0.5 --dropout_v 0.5 \
+	--num_segments $num_segments --val_segments $val_segments \
+	--add_fc $add_fc --fc_dim $fc_dim --dropout_i 0.5 --dropout_v 0.5 \
 	--use_target $use_target --share_params $share_params \
 	--dis_DA $dis_DA --alpha $alpha --place_dis N Y N \
 	--adv_DA $adv_DA --beta $beta_0 $beta_1 $beta_2 --place_adv $adv_pos_0 Y Y \
