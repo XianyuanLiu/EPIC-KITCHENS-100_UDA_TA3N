@@ -139,7 +139,7 @@ parser.add_argument('--exp_path', type=str, default="./model/action-model/",
                     help='full path of the experiment folder')
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--flow_prefix', default="", type=str)
-parser.add_argument('--save_model', default=False, action="store_true")
+parser.add_argument('--save_model', default=True, action="store_true")
 parser.add_argument('--save_best_log_val', default="best_val.log", type=str)
 parser.add_argument('--save_best_log_test', default="best_test.log", type=str)
 parser.add_argument('--save_attention', type=int, default=-1)
