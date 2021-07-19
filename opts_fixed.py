@@ -127,7 +127,7 @@ parser.add_argument('--verbose', default=False, action="store_true")
 
 # ========================= Runtime Configs ==========================
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
-                    # parser.add_argument('-j', '--workers', default=0, type=int, metavar='N',
+# parser.add_argument('-j', '--workers', default=0, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--resume', default='', type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
@@ -135,7 +135,7 @@ parser.add_argument('--resume_hp', default=False, action="store_true",
                     help='whether to use the saved hyper-parameters')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
-parser.add_argument('--exp_path', type=str, default="/model/action-model/",
+parser.add_argument('--exp_path', type=str, default="./model/action-model/",
                     help='full path of the experiment folder')
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--flow_prefix', default="", type=str)
