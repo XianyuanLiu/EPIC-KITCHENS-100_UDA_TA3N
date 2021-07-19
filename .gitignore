@@ -1,4 +1,3 @@
-__pycache__
 *.pt
 *.pth
 *.zip
@@ -6,6 +5,7 @@ __pycache__
 *.json
 
 model
-
-# Pycharm
 .idea
+.vscode
+__pycache__
+*/__pycache__/
