@@ -136,8 +136,8 @@ then
 	echo $modality
 	python main.py --num_class $num_class --modality $modality \
 	--train_source_list $train_source_list --train_target_list $train_target_list \
-	--val_list $val_list --path_data_val $path_data_val --path_data_source $path_data_source \
-	--path_data_target $path_data_target --exp_path $exp_path \
+	--val_list $val_list --val_data $path_data_val --train_source_data $path_data_source \
+	--train_target_data $path_data_target --exp_path $exp_path \
 	--train_metric $train_metric --dann_warmup --arch $arch --pretrained $pretrained --baseline_type $baseline_type --frame_aggregation $frame_aggregation \
 	--num_segments $num_segments --val_segments $val_segments \
 	--add_fc $add_fc --fc_dim $fc_dim --dropout_i 0.5 --dropout_v 0.5 \
