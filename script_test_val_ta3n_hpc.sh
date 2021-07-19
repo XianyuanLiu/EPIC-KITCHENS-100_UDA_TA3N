@@ -133,7 +133,7 @@ then
 	gd=20
 
 exp_path='model/action-model'
-echo $exp_path
+echo 'new exp_path: '$exp_path
 
 	#------ main command ------#
 	echo $modality
