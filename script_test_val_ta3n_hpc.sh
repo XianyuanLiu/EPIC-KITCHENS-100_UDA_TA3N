@@ -131,7 +131,10 @@ then
     	lr_steps_2=20
     	epochs=30
 	gd=20
-	
+
+exp_path='model/action-model'
+echo $exp_path
+
 	#------ main command ------#
 	echo $modality
 	python main.py --num_class $num_class --modality $modality \
@@ -161,8 +164,9 @@ then
 
 	# testing on the validation set
 	echo 'testing on the test set'
-	python test_models.py $num_class $modality $val_list \
-	 $exp_path$modality'/'$model'.pth.tar' $path_data_val 'test.json'\
+	python test_models.py --num_class $num_class --modality $modality --test_list $val_list \
+	--weights $exp_path$modality'/'$model'.pth.tar' \
+	--test_target_data $path_data_val --result_json 'test.json'\
 	--arch $arch --test_segments $test_segments \
 	--save_scores $exp_path$modality'/scores_'$dataset_target'-'$model'-'$test_segments'seg' --save_confusion $exp_path$modality'/confusion_matrix_'$dataset_target'-'$model'-'$test_segments'seg' \
 	--n_rnn 1 --rnn_cell LSTM --n_directions 1 --n_ts 5 \
