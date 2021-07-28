@@ -374,6 +374,7 @@ def train(num_class, source_loader, target_loader, model, criterion, criterion_d
     for i, ((source_data, source_label, source_id), (target_data, target_label, target_id)) in data_loader:
         # setup hyperparameters
         p = float(i + start_steps) / total_steps
+
         beta_dann = 2. / (1. + np.exp(-1.0 * p)) - 1
         beta = [beta_dann if beta[i] < 0 else beta[i] for i in
                 range(len(beta))]  # replace the default beta if value < 0
@@ -381,6 +382,10 @@ def train(num_class, source_loader, target_loader, model, criterion, criterion_d
             beta_new = [beta_dann * beta[i] for i in range(len(beta))]
         else:
             beta_new = beta
+
+        # print("i+start_steps: {}, total_steps: {}, p :{}, beta_new: {}".format(float(i + start_steps), total_steps, p, beta_new))
+        # print("lr: {}".format(optimizer.param_groups[0]['lr']))
+
         source_size_ori = source_data.size()  # original shape
         target_size_ori = target_data.size()  # original shape
         batch_source_ori = source_size_ori[0]
@@ -544,7 +549,7 @@ def train(num_class, source_loader, target_loader, model, criterion, criterion_d
 
         # MCD  not used
         # if args.ens_DA == 'MCD' and args.use_target != 'none':
-        #	loss_classification += criterion(out_source_2, label)
+        #     loss_classification += criterion(out_source_2, label)
 
         losses_c_verb.update(loss_verb.item(), out_verb.size(0))  # pytorch 0.4.X
         losses_c_noun.update(loss_noun.item(), out_noun.size(0))  # pytorch 0.4.X
